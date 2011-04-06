@@ -1,6 +1,8 @@
 package bugrap.main;
 
 import bugrap.identity.IdentityManagementView;
+import bugrap.processes.ProcessView;
+import bugrap.processes.TasksView;
 
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -39,6 +41,8 @@ public class MainWindow extends Window {
 		tabs.addStyleName(Reindeer.TABSHEET_SMALL);
 		tabs.setSizeFull();
 
+		tabs.addTab(createTasksView(), "Tasks", null);
+		tabs.addTab(createProcessView(), "Processes", null);
 		tabs.addTab(createIdentityManagementView(), "Identity Management", null);
 
 		return tabs;
@@ -46,5 +50,13 @@ public class MainWindow extends Window {
 
 	private IdentityManagementView createIdentityManagementView() {
 		return new IdentityManagementView();
+	}
+
+	private ProcessView createProcessView() {
+		return new ProcessView();
+	}
+
+	private TasksView createTasksView() {
+		return new TasksView();
 	}
 }
