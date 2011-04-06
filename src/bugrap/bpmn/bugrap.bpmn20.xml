@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20"
+	xmlns:activiti="http://activiti.org/bpmn" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+	
+	<process id="bugReport" name="Bug reporting process">
+	
+		<startEvent id="theStart"/>	
+		<sequenceFlow targetRef="submitBugReport" sourceRef="theStart"/>
+		
+		<userTask id="submitBugReport" name="Submit bug report" activiti:candidateGroups="reporters" activiti:formKey="submitBugReportForm">
+			<documentation>
+				A reporter submits a bug report including a summary of the bug and the project and version
+				the report relates to.
+			</documentation>
+		</userTask>
+		<sequenceFlow targetRef="fork" sourceRef="submitBugReport"/>
+		
+		<parallelGateway id="fork"/>		
+		<sequenceFlow targetRef="updateBugReport" sourceRef="fork"/>
+		<sequenceFlow targetRef="acceptBugReport" sourceRef="fork"/>
+	
+		<userTask id="updateBugReport" name="Update bug report" activiti:candidateGroups="managers" activiti:formKey="updateBugReportForm">
+			<documentation>
+				A manager updates a bug report and assigns priority and target version.
+			</documentation>
+		</userTask>		
+		<sequenceFlow targetRef="join" sourceRef="updateBugReport"/>
+		
+		<userTask id="acceptBugReport" name="Accept bug report" activiti:candidateGroups="developers" activiti:formKey="acceptBugReportForm">
+			<documentation>
+				A developer accepts a bug report.
+			</documentation>
+		</userTask>
+		<sequenceFlow targetRef="join" sourceRef="acceptBugReport"/>
+		
+		<parallelGateway id="join"/>		
+		<sequenceFlow targetRef="resolveBugReport" sourceRef="join"/>
+		
+		<userTask id="resolveBugReport" name="Resolve bug report" activiti:formKey="resolveBugReportForm">
+			<documentation>
+				A developer resolves a bug report he or she previously accepted.
+			</documentation>
+		</userTask>
+		
+		<sequenceFlow targetRef="theEnd" sourceRef="resolveBugReport"/>
+	
+		<endEvent id="theEnd"/>
+	
+	</process>
+	
+</definitions>
