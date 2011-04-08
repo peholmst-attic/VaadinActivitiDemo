@@ -1,12 +1,13 @@
 package bugrap.ui.home;
 
 import bugrap.ui.home.components.MainMenuItem;
-import bugrap.ui.identity.IdentityManagementViewImpl;
-import bugrap.ui.processes.ProcessViewImpl;
+import bugrap.ui.identity.IdentityManagementView;
+import bugrap.ui.processes.ProcessView;
 
 import com.github.peholmst.mvp4vaadin.VaadinView;
 import com.github.peholmst.mvp4vaadin.navigation.AbstractControllableView;
 import com.github.peholmst.mvp4vaadin.navigation.ControllableView;
+import com.github.peholmst.mvp4vaadin.navigation.ViewProvider;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.ComponentContainer;
@@ -22,8 +23,11 @@ public class HomeViewImpl extends
 
 	private VerticalLayout viewLayout;
 
-	public HomeViewImpl() {
-		super(true);
+	private ViewProvider viewProvider;
+
+	public HomeViewImpl(ViewProvider viewProvider) {
+		this.viewProvider = viewProvider;
+		init();
 	}
 
 	@Override
@@ -61,8 +65,8 @@ public class HomeViewImpl extends
 		info.addStyleName(Reindeer.LABEL_SMALL);
 		viewLayout.addComponent(info);
 
-		addItemForView(new ProcessViewImpl());
-		addItemForView(new IdentityManagementViewImpl());
+		addItemForView(viewProvider.getView(ProcessView.VIEW_ID));
+		addItemForView(viewProvider.getView(IdentityManagementView.VIEW_ID));
 	}
 
 	@SuppressWarnings("serial")

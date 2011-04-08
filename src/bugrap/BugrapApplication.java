@@ -2,13 +2,22 @@ package bugrap;
 
 import org.activiti.engine.ProcessEngines;
 
+import bugrap.ui.identity.IdentityManagementView;
+import bugrap.ui.identity.IdentityManagementViewImpl;
 import bugrap.ui.login.LoginViewImpl;
 import bugrap.ui.login.UserLoggedInEvent;
 import bugrap.ui.main.MainViewImpl;
 import bugrap.ui.main.UserLoggedOutEvent;
+import bugrap.ui.processes.ProcessView;
+import bugrap.ui.processes.ProcessViewImpl;
+import bugrap.ui.tasks.MyTasksView;
+import bugrap.ui.tasks.MyTasksViewImpl;
+import bugrap.ui.tasks.UnassignedTasksView;
+import bugrap.ui.tasks.UnassignedTasksViewImpl;
 
 import com.github.peholmst.mvp4vaadin.ViewEvent;
 import com.github.peholmst.mvp4vaadin.ViewListener;
+import com.github.peholmst.mvp4vaadin.navigation.DefaultViewProvider;
 import com.vaadin.Application;
 import com.vaadin.ui.Window;
 
@@ -19,6 +28,8 @@ public class BugrapApplication extends Application implements ViewListener {
 	private LoginViewImpl loginView;
 
 	private MainViewImpl mainView;
+
+	private DefaultViewProvider viewProvider;
 
 	@Override
 	public void init() {
@@ -35,8 +46,9 @@ public class BugrapApplication extends Application implements ViewListener {
 	}
 
 	private void createAndShowMainWindow() {
+		createAndInitViewProvider();
 		loginView.removeListener(this);
-		mainView = new MainViewImpl(this);
+		mainView = new MainViewImpl(this, viewProvider);
 		mainView.addListener(this);
 		// Remove old login window
 		removeWindow(getMainWindow());
@@ -44,6 +56,18 @@ public class BugrapApplication extends Application implements ViewListener {
 		Window mainWindow = new Window(mainView.getDisplayName(),
 				mainView.getViewComponent());
 		setMainWindow(mainWindow);
+	}
+
+	private void createAndInitViewProvider() {
+		viewProvider = new DefaultViewProvider();
+		viewProvider.addPreinitializedView(new MyTasksViewImpl(this),
+				MyTasksView.VIEW_ID);
+		viewProvider.addPreinitializedView(new UnassignedTasksViewImpl(this),
+				UnassignedTasksView.VIEW_ID);
+		viewProvider.addPreinitializedView(new ProcessViewImpl(this),
+				ProcessView.VIEW_ID);
+		viewProvider.addPreinitializedView(new IdentityManagementViewImpl(),
+				IdentityManagementView.VIEW_ID);
 	}
 
 	@Override

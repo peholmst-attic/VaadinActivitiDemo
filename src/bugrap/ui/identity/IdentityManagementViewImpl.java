@@ -1,22 +1,16 @@
 package bugrap.ui.identity;
 
-import com.github.peholmst.mvp4vaadin.VaadinView;
-import com.github.peholmst.mvp4vaadin.navigation.AbstractControllableView;
+import bugrap.ui.util.AbstractBugrapView;
+
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-public class IdentityManagementViewImpl
-		extends
-		AbstractControllableView<IdentityManagementView, IdentityManagementPresenter>
-		implements VaadinView, IdentityManagementView {
+public class IdentityManagementViewImpl extends
+		AbstractBugrapView<IdentityManagementView, IdentityManagementPresenter>
+		implements IdentityManagementView {
 
 	private static final long serialVersionUID = -7185704857935766773L;
-
-	private VerticalLayout viewLayout;
 
 	private TabSheet tabs;
 
@@ -26,13 +20,7 @@ public class IdentityManagementViewImpl
 
 	@Override
 	protected void initView() {
-		viewLayout = new VerticalLayout();
-		viewLayout.setSizeFull();
-		viewLayout.setMargin(true);
-
-		Label header = new Label(getDisplayName());
-		header.addStyleName(Reindeer.LABEL_H1);
-		viewLayout.addComponent(header);
+		super.initView();
 
 		tabs = new TabSheet();
 		tabs.setSizeFull();
@@ -40,8 +28,8 @@ public class IdentityManagementViewImpl
 		tabs.addTab(createUsersTab(), "Users", null);
 		tabs.addTab(createGroupsTab(), "Groups", null);
 
-		viewLayout.addComponent(tabs);
-		viewLayout.setExpandRatio(tabs, 1.0F);
+		getViewLayout().addComponent(tabs);
+		getViewLayout().setExpandRatio(tabs, 1.0F);
 	}
 
 	private Component createUsersTab() {
@@ -65,11 +53,6 @@ public class IdentityManagementViewImpl
 	@Override
 	protected IdentityManagementPresenter createPresenter() {
 		return new IdentityManagementPresenter(this);
-	}
-
-	@Override
-	public ComponentContainer getViewComponent() {
-		return viewLayout;
 	}
 
 }

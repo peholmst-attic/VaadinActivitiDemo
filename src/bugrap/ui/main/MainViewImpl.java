@@ -5,8 +5,7 @@ import bugrap.ui.main.components.WindowHeader;
 
 import com.github.peholmst.mvp4vaadin.AbstractView;
 import com.github.peholmst.mvp4vaadin.VaadinView;
-import com.github.peholmst.mvp4vaadin.navigation.DefaultViewController;
-import com.github.peholmst.mvp4vaadin.navigation.ViewController;
+import com.github.peholmst.mvp4vaadin.navigation.ViewProvider;
 import com.github.peholmst.mvp4vaadin.navigation.ui.NavigationBar;
 import com.github.peholmst.mvp4vaadin.navigation.ui.ViewContainerComponent;
 import com.vaadin.Application;
@@ -26,12 +25,13 @@ public class MainViewImpl extends AbstractView<MainView, MainPresenter>
 
 	private ViewContainerComponent viewContainer;
 
-	private ViewController viewController;
-
 	private final Application application;
 
-	public MainViewImpl(Application application) {
+	private final ViewProvider viewProvider;
+
+	public MainViewImpl(Application application, ViewProvider viewProvider) {
 		this.application = application;
+		this.viewProvider = viewProvider;
 		init();
 	}
 
@@ -47,13 +47,11 @@ public class MainViewImpl extends AbstractView<MainView, MainPresenter>
 
 	@Override
 	protected MainPresenter createPresenter() {
-		return new MainPresenter(this, application);
+		return new MainPresenter(this, application, viewProvider);
 	}
 
 	@Override
 	protected void initView() {
-		viewController = new DefaultViewController();
-
 		viewLayout = new VerticalLayout();
 		viewLayout.setSizeFull();
 
@@ -76,7 +74,7 @@ public class MainViewImpl extends AbstractView<MainView, MainPresenter>
 
 	private NavigationBar createNavigationBar() {
 		NavigationBar navigationBar = new NavigationBar();
-		navigationBar.setViewController(viewController);
+		navigationBar.setViewController(getPresenter().getViewController());
 		navigationBar.addStyleName("breadcrumbs");
 		navigationBar.setWidth("100%");
 		return navigationBar;
@@ -84,14 +82,14 @@ public class MainViewImpl extends AbstractView<MainView, MainPresenter>
 
 	private ViewContainerComponent createViewContainer() {
 		ViewContainerComponent viewContainer = new ViewContainerComponent();
-		viewContainer.setViewController(viewController);
+		viewContainer.setViewController(getPresenter().getViewController());
 		viewContainer.setSizeFull();
 		return viewContainer;
 	}
 
 	private void createAndAddHomeView() {
-		HomeViewImpl homeView = new HomeViewImpl();
-		viewController.goToView(homeView);
+		HomeViewImpl homeView = new HomeViewImpl(viewProvider);
+		getPresenter().getViewController().goToView(homeView);
 	}
 
 	@Override

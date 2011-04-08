@@ -8,6 +8,8 @@ import com.github.peholmst.mvp4vaadin.navigation.ControllableView;
 
 public interface ProcessView extends ControllableView {
 
+	String VIEW_ID = "process";
+
 	void setProcessDefinitions(List<ProcessDefinition> definitions);
 
 	void showProcessStartSuccess(ProcessDefinition process);

@@ -6,7 +6,13 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.TaskQuery;
 
+import bugrap.ui.tasks.MyTasksView;
+import bugrap.ui.tasks.UnassignedTasksView;
+
 import com.github.peholmst.mvp4vaadin.Presenter;
+import com.github.peholmst.mvp4vaadin.navigation.DefaultViewController;
+import com.github.peholmst.mvp4vaadin.navigation.ViewController;
+import com.github.peholmst.mvp4vaadin.navigation.ViewProvider;
 import com.vaadin.Application;
 
 public class MainPresenter extends Presenter<MainView> {
@@ -15,9 +21,14 @@ public class MainPresenter extends Presenter<MainView> {
 
 	private final Application application;
 
-	public MainPresenter(MainView view, Application application) {
+	private ViewController viewController;
+
+	public MainPresenter(MainView view, Application application,
+			ViewProvider viewProvider) {
 		super(view);
 		this.application = application;
+		viewController = new DefaultViewController();
+		viewController.setViewProvider(viewProvider);
 	}
 
 	@Override
@@ -25,6 +36,10 @@ public class MainPresenter extends Presenter<MainView> {
 		refreshTaskCounters();
 		String currentUser = getNameOfCurrentUser();
 		getView().setNameOfCurrentUser(currentUser);
+	}
+
+	public ViewController getViewController() {
+		return viewController;
 	}
 
 	public void logout() {
@@ -42,25 +57,29 @@ public class MainPresenter extends Presenter<MainView> {
 	}
 
 	private long getNumberOfTasksAssignedToCurrentUser() {
-		String currentUser = getNameOfCurrentUser();
+		String currentUser = getIdOfCurrentUser();
 		TaskQuery query = getTaskService().createTaskQuery();
 		return query.taskAssignee(currentUser).count();
 	}
 
 	public void showUnassignedTasks() {
-		// TODO Implement me!
+		getViewController().goToView(UnassignedTasksView.VIEW_ID);
 	}
 
 	public void showMyTasks() {
-		// TODO Implement me!
+		getViewController().goToView(MyTasksView.VIEW_ID);
 	}
 
 	private String getNameOfCurrentUser() {
-		String currentUserId = (String) application.getUser();
+		String currentUserId = getIdOfCurrentUser();
 		User userInfo = getIdentityService().createUserQuery()
 				.userId(currentUserId).singleResult();
 		return String.format("%s %s", userInfo.getFirstName(),
 				userInfo.getLastName());
+	}
+
+	private String getIdOfCurrentUser() {
+		return (String) application.getUser();
 	}
 
 	private IdentityService getIdentityService() {

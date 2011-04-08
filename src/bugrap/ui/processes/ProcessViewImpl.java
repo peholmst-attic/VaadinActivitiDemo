@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.activiti.engine.repository.ProcessDefinition;
 
-import com.github.peholmst.mvp4vaadin.VaadinView;
-import com.github.peholmst.mvp4vaadin.navigation.AbstractControllableView;
+import bugrap.ui.util.AbstractBugrapView;
+
+import com.vaadin.Application;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.Table;
@@ -20,19 +20,20 @@ import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Reindeer;
 
 public class ProcessViewImpl extends
-		AbstractControllableView<ProcessView, ProcessPresenter> implements
-		ProcessView, VaadinView {
+		AbstractBugrapView<ProcessView, ProcessPresenter> implements
+		ProcessView {
 
 	private static final long serialVersionUID = 8609961536309155685L;
-
-	private VerticalLayout viewLayout;
 
 	private Table processTable;
 
 	private BeanItemContainer<ProcessDefinition> dataSource;
 
-	public ProcessViewImpl() {
-		super(true);
+	private final Application application;
+
+	public ProcessViewImpl(Application application) {
+		this.application = application;
+		init();
 	}
 
 	@Override
@@ -47,25 +48,12 @@ public class ProcessViewImpl extends
 
 	@Override
 	protected ProcessPresenter createPresenter() {
-		return new ProcessPresenter(this);
-	}
-
-	@Override
-	public ComponentContainer getViewComponent() {
-		return viewLayout;
+		return new ProcessPresenter(this, application);
 	}
 
 	@Override
 	protected void initView() {
-		viewLayout = new VerticalLayout();
-		viewLayout.setSizeFull();
-		viewLayout.setMargin(true);
-		viewLayout.setSpacing(true);
-
-		Label header = new Label(getDisplayName());
-		header.addStyleName(Reindeer.LABEL_H1);
-		viewLayout.addComponent(header);
-
+		super.initView();
 		processTable = new Table();
 		dataSource = new BeanItemContainer<ProcessDefinition>(
 				ProcessDefinition.class);
@@ -74,8 +62,8 @@ public class ProcessViewImpl extends
 				"resourceName", "category" });
 		processTable.setSizeFull();
 		processTable.addGeneratedColumn("name", createNameColumnGenerator());
-		viewLayout.addComponent(processTable);
-		viewLayout.setExpandRatio(processTable, 1.0F);
+		getViewLayout().addComponent(processTable);
+		getViewLayout().setExpandRatio(processTable, 1.0F);
 	}
 
 	@SuppressWarnings("serial")
@@ -103,8 +91,9 @@ public class ProcessViewImpl extends
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		Label header = new Label(String.format(
-				"What would you like to do with %s?",
+				"What would you like to do with <b>%s</b>?",
 				processDefinition.getName()));
+		header.setContentMode(Label.CONTENT_XHTML);
 		layout.addComponent(header);
 
 		Button startNewInstanceButton = new Button("Start a new instance");
@@ -118,6 +107,21 @@ public class ProcessViewImpl extends
 			}
 		});
 		layout.addComponent(startNewInstanceButton);
+
+		Button startNewInstanceAndAssignToMeButton = new Button(
+				"Start a new instance and assign it to me");
+		startNewInstanceAndAssignToMeButton.addStyleName(Reindeer.BUTTON_SMALL);
+		startNewInstanceAndAssignToMeButton
+				.addListener(new Button.ClickListener() {
+
+					@Override
+					public void buttonClick(ClickEvent event) {
+						getPresenter().startNewInstanceAndAssignToCurrentUser(
+								processDefinition);
+						popup.setPopupVisible(false);
+					}
+				});
+		layout.addComponent(startNewInstanceAndAssignToMeButton);
 
 		// TODO Add start form support
 
@@ -141,21 +145,20 @@ public class ProcessViewImpl extends
 
 	@Override
 	public void showProcessStartSuccess(ProcessDefinition process) {
-		viewLayout.getWindow().showNotification(
+		getViewLayout().getWindow().showNotification(
 				String.format("%s started successfully", process.getName()),
 				Notification.TYPE_HUMANIZED_MESSAGE);
 	}
 
 	@Override
 	public void showProcessStartFailure(ProcessDefinition process) {
-		viewLayout
+		getViewLayout()
 				.getWindow()
 				.showNotification(
 						String.format(
 								"Could not start %s. Please check the logs for more information.",
 								process.getName()),
 						Notification.TYPE_ERROR_MESSAGE);
-
 	}
 
 }

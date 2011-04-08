@@ -11,6 +11,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 import com.github.peholmst.mvp4vaadin.navigation.ControllablePresenter;
+import com.vaadin.Application;
 
 public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 
@@ -19,8 +20,11 @@ public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 	private static Logger log = Logger.getLogger(ProcessPresenter.class
 			.getName());
 
-	public ProcessPresenter(ProcessView view) {
+	private final Application application;
+
+	public ProcessPresenter(ProcessView view, Application application) {
 		super(view);
+		this.application = application;
 	}
 
 	@Override
@@ -39,6 +43,15 @@ public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 			log.log(Level.SEVERE, "Could not start process instance", e);
 			getView().showProcessStartFailure(processDefinition);
 		}
+	}
+
+	public void startNewInstanceAndAssignToCurrentUser(
+			ProcessDefinition processDefinition) {
+		// TODO Implement me!
+	}
+
+	private String getIdOfCurrentUser() {
+		return (String) application.getUser();
 	}
 
 	private List<ProcessDefinition> getAllProcessDefinitions() {
