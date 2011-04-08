@@ -20,6 +20,8 @@ public abstract class AbstractBugrapView<V extends ControllableView, P extends C
 
 	private VerticalLayout viewLayout;
 
+	private Label header;
+
 	public AbstractBugrapView() {
 	}
 
@@ -49,7 +51,7 @@ public abstract class AbstractBugrapView<V extends ControllableView, P extends C
 		headerLayout.setSpacing(true);
 		viewLayout.addComponent(headerLayout);
 
-		Label header = new Label(getDisplayName());
+		header = new Label(getDisplayName());
 		header.addStyleName(Reindeer.LABEL_H1);
 		headerLayout.addComponent(header);
 		headerLayout.setComponentAlignment(header, Alignment.MIDDLE_LEFT);
@@ -68,6 +70,11 @@ public abstract class AbstractBugrapView<V extends ControllableView, P extends C
 		});
 		headerLayout.addComponent(backButton);
 		headerLayout.setComponentAlignment(backButton, Alignment.MIDDLE_RIGHT);
+	}
+
+	protected void updateHeaderLabel() {
+		// In case the display name is dynamic
+		header.setValue(getDisplayName());
 	}
 
 	protected void addAdditionalControlsToHeader(HorizontalLayout headerLayout) {

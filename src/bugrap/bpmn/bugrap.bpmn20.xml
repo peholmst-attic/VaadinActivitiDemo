@@ -36,7 +36,7 @@
 		<parallelGateway id="join"/>		
 		<sequenceFlow targetRef="resolveBugReport" sourceRef="join"/>
 		
-		<userTask id="resolveBugReport" name="Resolve bug report" activiti:formKey="resolveBugReportForm">
+		<userTask id="resolveBugReport" name="Resolve bug report" activiti:candidateGroups="developers" activiti:formKey="resolveBugReportForm">
 			<documentation>
 				A developer resolves a bug report he or she previously accepted.
 			</documentation>

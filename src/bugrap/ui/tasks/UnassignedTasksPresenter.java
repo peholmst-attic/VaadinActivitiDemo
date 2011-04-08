@@ -43,9 +43,10 @@ public class UnassignedTasksPresenter extends
 
 	@Override
 	protected List<Task> queryForTasksToShow() {
+		String currentUser = getIdOfCurrentUser();
 		TaskQuery query = getTaskService().createTaskQuery();
-		query.taskUnnassigned().orderByTaskPriority().desc().orderByDueDate()
-				.desc();
+		query.taskUnnassigned().taskCandidateUser(currentUser)
+				.orderByTaskPriority().desc().orderByDueDate().desc();
 		return query.list();
 	}
 }

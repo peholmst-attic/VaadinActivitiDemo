@@ -52,8 +52,9 @@ public class MainPresenter extends Presenter<MainView> {
 	}
 
 	private long getNumberOfUnassignedTasks() {
+		String currentUser = getIdOfCurrentUser();
 		TaskQuery query = getTaskService().createTaskQuery();
-		return query.taskUnnassigned().count();
+		return query.taskUnnassigned().taskCandidateUser(currentUser).count();
 	}
 
 	private long getNumberOfTasksAssignedToCurrentUser() {

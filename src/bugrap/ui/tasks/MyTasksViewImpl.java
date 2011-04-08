@@ -3,8 +3,13 @@ package bugrap.ui.tasks;
 import org.activiti.engine.task.Task;
 
 import com.vaadin.Application;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.themes.Reindeer;
 
 public class MyTasksViewImpl extends
 		AbstractTasksViewImpl<MyTasksView, MyTasksPresenter> implements
@@ -31,11 +36,59 @@ public class MyTasksViewImpl extends
 		return new MyTasksPresenter(this, getApplication());
 	}
 
+	@SuppressWarnings("serial")
 	@Override
-	protected PopupView createTaskPopup(Task task) {
+	protected PopupView createTaskPopup(final Task task) {
 		final VerticalLayout layout = new VerticalLayout();
 		final PopupView popup = new PopupView(task.getName(), layout);
-		// TODO Complete me!
+
+		layout.setSizeUndefined();
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		Label header = new Label(String.format(
+				"What would you like to do with <b>%s</b>?", task.getName()));
+		header.setContentMode(Label.CONTENT_XHTML);
+		layout.addComponent(header);
+
+		if (getPresenter().taskHasForm(task)) {
+			Button openFormButton = new Button("Open Form");
+			openFormButton.addListener(new Button.ClickListener() {
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					getPresenter().openFormForTask(task);
+					popup.setPopupVisible(false);
+				}
+			});
+			openFormButton.addStyleName(Reindeer.BUTTON_SMALL);
+			layout.addComponent(openFormButton);
+		}
+
+		Button completeButton = new Button("Complete");
+		completeButton.addListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().completeTask(task);
+				popup.setPopupVisible(false);
+			}
+		});
+		completeButton.addStyleName(Reindeer.BUTTON_SMALL);
+		layout.addComponent(completeButton);
+
+		Button delegateToOtherUserButton = new Button(
+				"Delegate to other user...");
+		delegateToOtherUserButton.addListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().delegateToOtherUser(task);
+				popup.setPopupVisible(false);
+			}
+		});
+		delegateToOtherUserButton.addStyleName(Reindeer.BUTTON_SMALL);
+		layout.addComponent(delegateToOtherUserButton);
+
 		return popup;
 	}
 
@@ -43,6 +96,24 @@ public class MyTasksViewImpl extends
 	protected String[] getVisibleColumns() {
 		return new String[] { "id", "name", "description", "priority",
 				"dueDate", "createTime", "assignee" };
+	}
+
+	@Override
+	public void showTaskCompletedSuccess(Task task) {
+		getViewLayout().getWindow().showNotification(
+				String.format("%s completed successfully", task.getName()),
+				Notification.TYPE_HUMANIZED_MESSAGE);
+	}
+
+	@Override
+	public void showTaskCompletedFailure(Task task) {
+		getViewLayout()
+				.getWindow()
+				.showNotification(
+						String.format(
+								"Could not complete %s. Please check the logs for more information.",
+								task.getName()),
+						Notification.TYPE_ERROR_MESSAGE);
 	}
 
 }

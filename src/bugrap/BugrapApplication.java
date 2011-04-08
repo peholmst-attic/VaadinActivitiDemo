@@ -2,6 +2,9 @@ package bugrap;
 
 import org.activiti.engine.ProcessEngines;
 
+import bugrap.bpmn.forms.SubmitBugReportForm;
+import bugrap.ui.forms.UserFormView;
+import bugrap.ui.forms.UserFormViewImpl;
 import bugrap.ui.identity.IdentityManagementView;
 import bugrap.ui.identity.IdentityManagementViewImpl;
 import bugrap.ui.login.LoginViewImpl;
@@ -14,6 +17,7 @@ import bugrap.ui.tasks.MyTasksView;
 import bugrap.ui.tasks.MyTasksViewImpl;
 import bugrap.ui.tasks.UnassignedTasksView;
 import bugrap.ui.tasks.UnassignedTasksViewImpl;
+import bugrap.ui.util.UserTaskFormContainer;
 
 import com.github.peholmst.mvp4vaadin.ViewEvent;
 import com.github.peholmst.mvp4vaadin.ViewListener;
@@ -30,6 +34,8 @@ public class BugrapApplication extends Application implements ViewListener {
 	private MainViewImpl mainView;
 
 	private DefaultViewProvider viewProvider;
+
+	private UserTaskFormContainer userTaskFormContainer;
 
 	@Override
 	public void init() {
@@ -59,6 +65,7 @@ public class BugrapApplication extends Application implements ViewListener {
 	}
 
 	private void createAndInitViewProvider() {
+		createAndInitUserTaskFormContainer();
 		viewProvider = new DefaultViewProvider();
 		viewProvider.addPreinitializedView(new MyTasksViewImpl(this),
 				MyTasksView.VIEW_ID);
@@ -68,6 +75,14 @@ public class BugrapApplication extends Application implements ViewListener {
 				ProcessView.VIEW_ID);
 		viewProvider.addPreinitializedView(new IdentityManagementViewImpl(),
 				IdentityManagementView.VIEW_ID);
+		viewProvider.addPreinitializedView(new UserFormViewImpl(
+				userTaskFormContainer), UserFormView.VIEW_ID);
+	}
+
+	private void createAndInitUserTaskFormContainer() {
+		userTaskFormContainer = new UserTaskFormContainer();
+		userTaskFormContainer.registerForm(SubmitBugReportForm.FORM_KEY,
+				SubmitBugReportForm.class);
 	}
 
 	@Override

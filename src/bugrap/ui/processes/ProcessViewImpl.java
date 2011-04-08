@@ -108,32 +108,6 @@ public class ProcessViewImpl extends
 		});
 		layout.addComponent(startNewInstanceButton);
 
-		Button startNewInstanceAndAssignToMeButton = new Button(
-				"Start a new instance and assign it to me");
-		startNewInstanceAndAssignToMeButton.addStyleName(Reindeer.BUTTON_SMALL);
-		startNewInstanceAndAssignToMeButton
-				.addListener(new Button.ClickListener() {
-
-					@Override
-					public void buttonClick(ClickEvent event) {
-						getPresenter().startNewInstanceAndAssignToCurrentUser(
-								processDefinition);
-						popup.setPopupVisible(false);
-					}
-				});
-		layout.addComponent(startNewInstanceAndAssignToMeButton);
-
-		// TODO Add start form support
-
-		/*
-		 * if (processDefinition.hasStartFormKey()) { Button
-		 * startNewInstanceWithVariablesButton = new Button(
-		 * "Start a new instance and fill in the Start Form");
-		 * startNewInstanceWithVariablesButton
-		 * .addStyleName(Reindeer.BUTTON_SMALL);
-		 * layout.addComponent(startNewInstanceWithVariablesButton); }
-		 */
-
 		return popup;
 	}
 
