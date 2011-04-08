@@ -1,6 +1,6 @@
-package bugrap.identity;
+package bugrap.ui.identity;
 
-import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -16,37 +16,35 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
-public class GroupFormWindow extends Window {
-
+public class UserFormWindow extends Window {
 	private static final long serialVersionUID = -2197473990599017981L;
 
-	private final Group group;
+	private final User user;
 
-	private final GroupCallback saveCallBack;
+	private final UserCallback saveCallBack;
 
-	private Form groupForm;
+	private Form userForm;
 
-	private GroupFormWindow(String title, Group group,
-			GroupCallback saveCallback) {
+	private UserFormWindow(String title, User user, UserCallback saveCallback) {
 		super(title);
 		setModal(true);
-		this.group = group;
+		this.user = user;
 		this.saveCallBack = saveCallback;
 		initComponents();
 	}
 
 	@SuppressWarnings("serial")
 	private void initComponents() {
-		groupForm = new Form();
-		groupForm.setFormFieldFactory(createFieldFactory());
-		groupForm.setInvalidCommitted(false);
-		groupForm.setWriteThrough(false);
-		groupForm.setImmediate(true);
-		BeanItem<Group> item = new BeanItem<Group>(group);
-		groupForm.setItemDataSource(item);
-		groupForm
-				.setVisibleItemProperties(new String[] { "id", "name", "type" });
-		addComponent(groupForm);
+		userForm = new Form();
+		userForm.setFormFieldFactory(createFieldFactory());
+		userForm.setInvalidCommitted(false);
+		userForm.setWriteThrough(false);
+		userForm.setImmediate(true);
+		BeanItem<User> item = new BeanItem<User>(user);
+		userForm.setItemDataSource(item);
+		userForm.setVisibleItemProperties(new String[] { "id", "password",
+				"firstName", "lastName", "email" });
+		addComponent(userForm);
 
 		HorizontalLayout buttons = new HorizontalLayout();
 		buttons.setSpacing(true);
@@ -71,21 +69,21 @@ public class GroupFormWindow extends Window {
 		});
 		buttons.addComponent(cancelButton);
 
-		((TextField) groupForm.getField("id")).selectAll();
+		((TextField) userForm.getField("id")).selectAll();
 
 		setWidth("300px");
 	}
 
 	private void saveAndClose() {
 		try {
-			groupForm.commit();
-			saveCallBack.saveGroup(group);
+			userForm.commit();
+			saveCallBack.saveUser(user);
 			getParent().removeWindow(this);
 		} catch (InvalidValueException e) {
 			// Ignore this exception; it is handled by the form.
 		} catch (RuntimeException e) {
 			showNotification(
-					String.format("Error saving group: %s", e.getMessage()),
+					String.format("Error saving user: %s", e.getMessage()),
 					Notification.TYPE_ERROR_MESSAGE);
 		}
 	}
@@ -102,7 +100,7 @@ public class GroupFormWindow extends Window {
 			public Field createField(Item item, Object propertyId,
 					Component uiContext) {
 				Field f = super.createField(item, propertyId, uiContext);
-				if ("id".equals(propertyId) || "name".equals(propertyId)) {
+				if ("id".equals(propertyId) || "password".equals(propertyId)) {
 					f.setRequired(true);
 					f.setRequiredError(String.format("%s cannot be empty.",
 							f.getCaption()));
@@ -115,21 +113,22 @@ public class GroupFormWindow extends Window {
 		};
 	}
 
-	public static interface GroupCallback {
-		void saveGroup(Group group);
+	public static interface UserCallback {
+		void saveUser(User user);
 	}
 
-	public static GroupFormWindow addGroupWindow(GroupCallback saveCallback,
-			Group groupToEdit) {
-		GroupFormWindow window = new GroupFormWindow("Add Group", groupToEdit,
+	public static UserFormWindow addUserWindow(UserCallback saveCallback,
+			User userToEdit) {
+		UserFormWindow window = new UserFormWindow("Add User", userToEdit,
 				saveCallback);
 		return window;
 	}
 
-	public static GroupFormWindow editGroupWindow(GroupCallback saveCallback,
-			Group groupToEdit) {
-		GroupFormWindow window = new GroupFormWindow("Edit Group", groupToEdit,
+	public static UserFormWindow editUserWindow(UserCallback saveCallback,
+			User userToEdit) {
+		UserFormWindow window = new UserFormWindow("Edit User", userToEdit,
 				saveCallback);
 		return window;
 	}
+
 }

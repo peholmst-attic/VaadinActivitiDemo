@@ -1,4 +1,4 @@
-package bugrap.identity;
+package bugrap.ui.identity;
 
 import java.util.List;
 

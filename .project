@@ -3,6 +3,7 @@
 	<name>BugrapActivitiDemo</name>
 	<comment></comment>
 	<projects>
+		<project>MVP4Vaadin</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

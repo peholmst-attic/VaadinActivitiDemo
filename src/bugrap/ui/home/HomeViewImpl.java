@@ -1,0 +1,80 @@
+package bugrap.ui.home;
+
+import bugrap.ui.home.components.MainMenuItem;
+import bugrap.ui.identity.IdentityManagementViewImpl;
+import bugrap.ui.processes.ProcessViewImpl;
+
+import com.github.peholmst.mvp4vaadin.VaadinView;
+import com.github.peholmst.mvp4vaadin.navigation.AbstractControllableView;
+import com.github.peholmst.mvp4vaadin.navigation.ControllableView;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
+
+public class HomeViewImpl extends
+		AbstractControllableView<HomeView, HomePresenter> implements HomeView,
+		VaadinView {
+
+	private static final long serialVersionUID = -6441832004361841454L;
+
+	private VerticalLayout viewLayout;
+
+	public HomeViewImpl() {
+		super(true);
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Home";
+	}
+
+	@Override
+	public String getDescription() {
+		return "The starting point of Bugrap Activiti Demo";
+	}
+
+	@Override
+	protected HomePresenter createPresenter() {
+		return new HomePresenter(this);
+	}
+
+	@Override
+	public ComponentContainer getViewComponent() {
+		return viewLayout;
+	}
+
+	@Override
+	protected void initView() {
+		viewLayout = new VerticalLayout();
+		viewLayout.setMargin(true);
+		viewLayout.setSpacing(true);
+
+		Label header = new Label("Welcome to the Bugrap Activiti Demo!");
+		header.addStyleName(Reindeer.LABEL_H1);
+		viewLayout.addComponent(header);
+
+		Label info = new Label(
+				"This screen is the main menu for Bugrap Activiti Demo. What would you like to do?");
+		info.addStyleName(Reindeer.LABEL_SMALL);
+		viewLayout.addComponent(info);
+
+		addItemForView(new ProcessViewImpl());
+		addItemForView(new IdentityManagementViewImpl());
+	}
+
+	@SuppressWarnings("serial")
+	private void addItemForView(final ControllableView view) {
+		MainMenuItem item = new MainMenuItem(view);
+		item.addListener(new LayoutClickListener() {
+
+			@Override
+			public void layoutClick(LayoutClickEvent event) {
+				getViewController().goToView(view);
+			}
+		});
+		viewLayout.addComponent(item);
+	}
+}

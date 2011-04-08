@@ -3,6 +3,9 @@
     <wb-module deploy-name="BugrapActivitiDemo">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="MVP4Vaadin.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/MVP4Vaadin/MVP4Vaadin">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="BugrapActivitiDemo"/>
         <property name="java-output-path" value="/BugrapActivitiDemo/build/classes"/>
     </wb-module>
