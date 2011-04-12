@@ -62,19 +62,19 @@ public class MyTasksViewImpl extends
 			});
 			openFormButton.addStyleName(Reindeer.BUTTON_SMALL);
 			layout.addComponent(openFormButton);
+		} else {
+			Button completeButton = new Button("Complete");
+			completeButton.addListener(new Button.ClickListener() {
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					getPresenter().completeTask(task);
+					popup.setPopupVisible(false);
+				}
+			});
+			completeButton.addStyleName(Reindeer.BUTTON_SMALL);
+			layout.addComponent(completeButton);
 		}
-
-		Button completeButton = new Button("Complete");
-		completeButton.addListener(new Button.ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				getPresenter().completeTask(task);
-				popup.setPopupVisible(false);
-			}
-		});
-		completeButton.addStyleName(Reindeer.BUTTON_SMALL);
-		layout.addComponent(completeButton);
 
 		Button delegateToOtherUserButton = new Button(
 				"Delegate to other user...");

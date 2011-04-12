@@ -4,6 +4,10 @@ import bugrap.ui.util.AbstractBugrapView;
 import bugrap.ui.util.UserTaskForm;
 import bugrap.ui.util.UserTaskFormContainer;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.VerticalLayout;
+
 public class UserFormViewImpl extends
 		AbstractBugrapView<UserFormView, UserFormPresenter> implements
 		UserFormView {
@@ -12,12 +16,40 @@ public class UserFormViewImpl extends
 
 	private final UserTaskFormContainer userTaskFormContainer;
 
+	private Button submitButton;
+
+	private VerticalLayout formContainerLayout;
+
+	private UserTaskForm currentForm;
+
 	public UserFormViewImpl(UserTaskFormContainer userTaskFormContainer) {
 		this.userTaskFormContainer = userTaskFormContainer;
 		init();
 	}
 
-	private UserTaskForm currentForm;
+	@SuppressWarnings("serial")
+	@Override
+	protected void initView() {
+		super.initView();
+
+		formContainerLayout = new VerticalLayout();
+		formContainerLayout.setSizeFull();
+		getViewLayout().addComponent(formContainerLayout);
+		getViewLayout().setExpandRatio(formContainerLayout, 1.0F);
+
+		submitButton = new Button("Submit Form");
+		submitButton.addListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (currentForm != null) {
+					getPresenter().submitForm(currentForm);
+				}
+			}
+		});
+		getViewComponent().addComponent(submitButton);
+		submitButton.setVisible(false);
+	}
 
 	@Override
 	public String getDisplayName() {
@@ -39,12 +71,21 @@ public class UserFormViewImpl extends
 	@Override
 	public void setForm(UserTaskForm form) {
 		currentForm = form;
-		updateHeaderLabel();
+		updateControls();
 	}
 
 	@Override
 	public void hideForm() {
 		currentForm = null;
+		updateControls();
 	}
 
+	private void updateControls() {
+		updateHeaderLabel();
+		submitButton.setVisible(currentForm != null);
+		formContainerLayout.removeAllComponents();
+		if (currentForm != null) {
+			formContainerLayout.addComponent(currentForm.getFormComponent());
+		}
+	}
 }

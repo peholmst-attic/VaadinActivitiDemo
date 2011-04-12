@@ -2,11 +2,22 @@ package bugrap.ui.util;
 
 import java.util.Map;
 
-import org.activiti.engine.form.FormData;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
 
 import com.vaadin.ui.Component;
 
 public interface UserTaskForm extends java.io.Serializable {
+
+	enum Type {
+		START_FORM, TASK_FORM
+	}
+
+	Type getFormType();
+
+	String getProcessDefinitionId();
+
+	String getTaskId();
 
 	String getDisplayName();
 
@@ -14,7 +25,9 @@ public interface UserTaskForm extends java.io.Serializable {
 
 	String getFormKey();
 
-	void populateForm(FormData formData);
+	void populateForm(StartFormData formData, String processDefinitionId);
+
+	void populateForm(TaskFormData formData, String taskId);
 
 	Map<String, String> getFormProperties();
 

@@ -4,7 +4,8 @@ import java.util.Map;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.form.FormData;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
 
 import bugrap.ui.util.UserTaskForm;
 import bugrap.ui.util.UserTaskFormContainer;
@@ -49,21 +50,28 @@ public class UserFormPresenter extends ControllablePresenter<UserFormView> {
 	}
 
 	public void submitForm(UserTaskForm form) {
-
+		if (form.getFormType().equals(UserTaskForm.Type.START_FORM)) {
+			getFormService().submitStartFormData(form.getProcessDefinitionId(),
+					form.getFormProperties());
+		} else if (form.getFormType().equals(UserTaskForm.Type.TASK_FORM)) {
+			getFormService().submitTaskFormData(form.getTaskId(),
+					form.getFormProperties());
+		}
+		getViewController().goBack();
 	}
 
 	private void showTaskForm(String formKey, String taskId) {
 		UserTaskForm form = userTaskFormContainer.getForm(formKey);
-		FormData formData = getFormService().getTaskFormData(taskId);
-		form.populateForm(formData);
+		TaskFormData formData = getFormService().getTaskFormData(taskId);
+		form.populateForm(formData, taskId);
 		getView().setForm(form);
 	}
 
 	private void showProcessForm(String formKey, String processDefinitionId) {
 		UserTaskForm form = userTaskFormContainer.getForm(formKey);
-		FormData formData = getFormService().getStartFormData(
+		StartFormData formData = getFormService().getStartFormData(
 				processDefinitionId);
-		form.populateForm(formData);
+		form.populateForm(formData, processDefinitionId);
 		getView().setForm(form);
 	}
 

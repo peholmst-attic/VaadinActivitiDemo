@@ -2,7 +2,10 @@ package bugrap;
 
 import org.activiti.engine.ProcessEngines;
 
+import bugrap.bpmn.forms.AcceptBugReportForm;
+import bugrap.bpmn.forms.ResolveBugReportForm;
 import bugrap.bpmn.forms.SubmitBugReportForm;
+import bugrap.bpmn.forms.UpdateBugReportForm;
 import bugrap.ui.forms.UserFormView;
 import bugrap.ui.forms.UserFormViewImpl;
 import bugrap.ui.identity.IdentityManagementView;
@@ -71,7 +74,7 @@ public class BugrapApplication extends Application implements ViewListener {
 				MyTasksView.VIEW_ID);
 		viewProvider.addPreinitializedView(new UnassignedTasksViewImpl(this),
 				UnassignedTasksView.VIEW_ID);
-		viewProvider.addPreinitializedView(new ProcessViewImpl(this),
+		viewProvider.addPreinitializedView(new ProcessViewImpl(),
 				ProcessView.VIEW_ID);
 		viewProvider.addPreinitializedView(new IdentityManagementViewImpl(),
 				IdentityManagementView.VIEW_ID);
@@ -83,6 +86,12 @@ public class BugrapApplication extends Application implements ViewListener {
 		userTaskFormContainer = new UserTaskFormContainer();
 		userTaskFormContainer.registerForm(SubmitBugReportForm.FORM_KEY,
 				SubmitBugReportForm.class);
+		userTaskFormContainer.registerForm(UpdateBugReportForm.FORM_KEY,
+				UpdateBugReportForm.class);
+		userTaskFormContainer.registerForm(AcceptBugReportForm.FORM_KEY,
+				AcceptBugReportForm.class);
+		userTaskFormContainer.registerForm(ResolveBugReportForm.FORM_KEY,
+				ResolveBugReportForm.class);
 	}
 
 	@Override

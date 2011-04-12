@@ -6,7 +6,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 import bugrap.ui.util.AbstractBugrapView;
 
-import com.vaadin.Application;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -29,11 +28,8 @@ public class ProcessViewImpl extends
 
 	private BeanItemContainer<ProcessDefinition> dataSource;
 
-	private final Application application;
-
-	public ProcessViewImpl(Application application) {
-		this.application = application;
-		init();
+	public ProcessViewImpl() {
+		super(true);
 	}
 
 	@Override
@@ -48,7 +44,7 @@ public class ProcessViewImpl extends
 
 	@Override
 	protected ProcessPresenter createPresenter() {
-		return new ProcessPresenter(this, application);
+		return new ProcessPresenter(this);
 	}
 
 	@Override

@@ -2,18 +2,36 @@ package bugrap.bpmn.forms;
 
 import java.util.Map;
 
-import org.activiti.engine.form.FormData;
-
+import bugrap.ui.util.AbstractUserTaskForm;
 import bugrap.ui.util.UserTaskForm;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Form;
+import com.vaadin.ui.TextField;
 
-public class SubmitBugReportForm extends Form implements UserTaskForm {
+public class SubmitBugReportForm extends AbstractUserTaskForm implements
+		UserTaskForm {
 
 	private static final long serialVersionUID = -8675838686891790914L;
 
 	public static final String FORM_KEY = "submitBugReportForm";
+
+	private TextField project;
+
+	private TextField version;
+
+	private TextField summary;
+
+	@Override
+	protected void init() {
+		project = new TextField("Project");
+		addComponent(project);
+
+		version = new TextField("Version");
+		addComponent(version);
+
+		summary = new TextField("Summary");
+		addComponent(summary);
+
+	}
 
 	@Override
 	public String getDisplayName() {
@@ -31,20 +49,20 @@ public class SubmitBugReportForm extends Form implements UserTaskForm {
 	}
 
 	@Override
-	public void populateForm(FormData formData) {
-		// TODO Auto-generated method stub
-
+	public void copyFormProperties(Map<String, String> destination) {
+		destination.put("project", (String) project.getValue());
+		destination.put("version", (String) version.getValue());
+		destination.put("summary", (String) summary.getValue());
 	}
 
 	@Override
-	public Map<String, String> getFormProperties() {
-		// TODO Auto-generated method stub
-		return null;
+	protected void populateFormField(String propertyId, String propertyValue) {
+		if (propertyId.equals("project")) {
+			project.setValue(propertyValue);
+		} else if (propertyId.equals("version")) {
+			version.setValue(propertyValue);
+		} else if (propertyId.equals("summary")) {
+			summary.setValue(propertyValue);
+		}
 	}
-
-	@Override
-	public Component getFormComponent() {
-		return this;
-	}
-
 }

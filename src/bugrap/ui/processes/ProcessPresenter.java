@@ -1,17 +1,20 @@
 package bugrap.ui.processes;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
+import bugrap.ui.forms.UserFormView;
+
 import com.github.peholmst.mvp4vaadin.navigation.ControllablePresenter;
-import com.vaadin.Application;
 
 public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 
@@ -20,11 +23,8 @@ public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 	private static Logger log = Logger.getLogger(ProcessPresenter.class
 			.getName());
 
-	private final Application application;
-
-	public ProcessPresenter(ProcessView view, Application application) {
+	public ProcessPresenter(ProcessView view) {
 		super(view);
-		this.application = application;
 	}
 
 	@Override
@@ -36,22 +36,38 @@ public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 		log.log(Level.INFO, "Starting instance of process {1}",
 				processDefinition.getKey());
 		try {
-			getRuntimeService().startProcessInstanceById(
-					processDefinition.getId());
-			getView().showProcessStartSuccess(processDefinition);
+			if (processDefinitionHasForm(processDefinition)) {
+				openFormForProcessDefinition(processDefinition);
+			} else {
+				getRuntimeService().startProcessInstanceById(
+						processDefinition.getId());
+				getView().showProcessStartSuccess(processDefinition);
+			}
 		} catch (RuntimeException e) {
 			log.log(Level.SEVERE, "Could not start process instance", e);
 			getView().showProcessStartFailure(processDefinition);
 		}
 	}
 
-	public void startNewInstanceAndAssignToCurrentUser(
-			ProcessDefinition processDefinition) {
-		// TODO Implement me!
+	public boolean processDefinitionHasForm(ProcessDefinition processDef) {
+		return getFormService().getStartFormData(processDef.getId())
+				.getFormKey() != null;
 	}
 
-	private String getIdOfCurrentUser() {
-		return (String) application.getUser();
+	public void openFormForProcessDefinition(ProcessDefinition processDef) {
+		String formKey = getFormKey(processDef);
+		if (formKey != null) {
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put(UserFormView.KEY_FORM_KEY, formKey);
+			params.put(UserFormView.KEY_PROCESS_DEFINITION_ID,
+					processDef.getId());
+			getViewController().goToView(UserFormView.VIEW_ID, params);
+		}
+	}
+
+	private String getFormKey(ProcessDefinition processDef) {
+		return getFormService().getStartFormData(processDef.getId())
+				.getFormKey();
 	}
 
 	private List<ProcessDefinition> getAllProcessDefinitions() {
@@ -66,6 +82,10 @@ public class ProcessPresenter extends ControllablePresenter<ProcessView> {
 
 	private RuntimeService getRuntimeService() {
 		return ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+	}
+
+	private FormService getFormService() {
+		return ProcessEngines.getDefaultProcessEngine().getFormService();
 	}
 
 }
