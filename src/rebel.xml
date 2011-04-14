@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <application>
 <classpath>
-<dir name="/Users/peholmst/Projects/Architecture/BPM/Workspace/BugrapActivitiDemo/build/classes"/>
+<dir name="/Users/peholmst/Projects/Architecture/BPM/Workspace/VaadinActivitiDemo/build/classes"/>
 </classpath>
 <web>
 <link target="">
-<dir name="/Users/peholmst/Projects/Architecture/BPM/Workspace/BugrapActivitiDemo/WebContent"/>
+<dir name="/Users/peholmst/Projects/Architecture/BPM/Workspace/VaadinActivitiDemo/WebContent"/>
 </link>
 </web>
 </application>

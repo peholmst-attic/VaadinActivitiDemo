@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="BugrapActivitiDemo">
+    <wb-module deploy-name="VaadinActivitiDemo">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <dependent-module archiveName="MVP4Vaadin.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/MVP4Vaadin/MVP4Vaadin">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="context-root" value="BugrapActivitiDemo"/>
-        <property name="java-output-path" value="/BugrapActivitiDemo/build/classes"/>
+        <property name="java-output-path" value="/VaadinActivitiDemo/build/classes"/>
+        <property name="context-root" value="VaadinActivitiDemo"/>
     </wb-module>
 </project-modules>

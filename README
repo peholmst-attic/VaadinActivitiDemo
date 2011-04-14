@@ -1,7 +1,7 @@
-Bugrap Activiti Demo
+Vaadin Activiti Demo
 
 This application demonstrates how to create a Vaadin application on top of the Activiti BPM platform.
-Please see the wiki for more information: https://github.com/peholmst/BugrapActivitiDemo/wiki
+Please see the wiki for more information: https://github.com/peholmst/VaadinActivitiDemo/wiki
 
 Vaadin: http://www.vaadin.com
 
