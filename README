@@ -1,3 +1,9 @@
+PLEASE NOTE! This is NOT the application we demonstrated at Devoxx 2011.
+That application can be found here:
+	https://github.com/peholmst/ActivitiVaadinDevoxx11
+
+------
+
 Vaadin Activiti Demo
 
 This application demonstrates how to create a Vaadin application on top of the Activiti BPM platform.
